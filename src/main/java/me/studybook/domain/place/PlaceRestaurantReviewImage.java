@@ -1,7 +1,9 @@
-package me.studybook.domain;
+package me.studybook.domain.place;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import me.studybook.domain.user.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,14 +11,19 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "member_image")
+@Table(name = "p_restaurant_review_images")
 @Getter
 @Setter
-public class MemberImage {
+@ToString
+public class PlaceRestaurantReviewImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(targetEntity = PlaceRestaurantReview.class, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "review_id")
+    private PlaceRestaurant restaurant;
 
     @Column(name = "origin_path", length = 100, nullable = false)
     private String originPath;

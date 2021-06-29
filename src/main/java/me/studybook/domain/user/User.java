@@ -1,22 +1,22 @@
-package me.studybook.domain;
+package me.studybook.domain.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+@ToString
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,22 +44,21 @@ public class Member {
     @Column(name = "last_out_at", columnDefinition = "timestamp")
     private LocalDateTime lastOutAt;
 
-    @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
-    List<MemberImage> memberImages;
+    @OneToOne(mappedBy = "user")
+    private UserDetail userDetail;
 
-    public Member(String email, String nickname, String password) {
-        this.email = email;
-        this.nickname = nickname;
-        this.password = password;
-    }
+    @OneToMany(mappedBy = "user")
+    private List<UserImage> userImages;
 
+    @OneToMany(mappedBy = "follower")
+    private List<UserFollow> followers;
+
+    @OneToMany(mappedBy = "following")
+    private List<UserFollow> followings;
 }
