@@ -1,8 +1,6 @@
 package me.studybook.domain.user;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,19 +11,19 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_follows")
 @Getter
-@Setter
 @ToString
+@NoArgsConstructor
 public class UserFollow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "follower_id")
     private User follower;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "following_id")
     private User following;
 
@@ -34,4 +32,10 @@ public class UserFollow {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Builder
+    public UserFollow(User follower, User following) {
+        this.follower = follower;
+        this.following = following;
+    }
 }

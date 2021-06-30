@@ -1,8 +1,6 @@
 package me.studybook.domain.user;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,15 +10,15 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_images")
 @Getter
-@Setter
 @ToString
+@NoArgsConstructor
 public class UserImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = User.class, cascade = { CascadeType.REMOVE })
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -35,4 +33,12 @@ public class UserImage {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Builder
+    public UserImage(Long id, User user, String originPath, String previewPath) {
+        this.id = id;
+        this.user = user;
+        this.originPath = originPath;
+        this.previewPath = previewPath;
+    }
 }

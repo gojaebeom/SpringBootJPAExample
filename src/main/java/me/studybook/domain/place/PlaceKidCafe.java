@@ -1,8 +1,6 @@
 package me.studybook.domain.place;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "p_kid_cafes")
 @Getter
-@Setter
+@NoArgsConstructor
 @ToString
 public class PlaceKidCafe {
     @Id
@@ -43,5 +41,13 @@ public class PlaceKidCafe {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-
+    @Builder
+    public PlaceKidCafe(String name, String address, String phone, Float lat, Float lon, String admissionFee) {
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.lat = lat;
+        this.lon = lon;
+        this.admissionFee = admissionFee;
+    }
 }

@@ -2,11 +2,14 @@ package me.studybook.controller.user;
 
 import me.studybook.domain.user.User;
 import me.studybook.dto.JoinUserForm;
+import me.studybook.dto.ResponseData;
+import me.studybook.dto.UserFindAll;
 import me.studybook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -23,25 +26,36 @@ public class UserController {
     // TODO: 전체,필터에 따른 조회
     @GetMapping("/users")
     public ResponseEntity index() throws Exception {
-        List<User> users = userService.getUsers();
-        return ResponseEntity.ok(users);
+        List<UserFindAll> users = userService.getUsers();
+
+        ResponseData responseData = ResponseData.builder()
+                .message("select user list")
+                .data(users)
+                .build();
+
+        return ResponseEntity.ok().body(responseData);
     }
 
     // TODO: 상세 조회
     @GetMapping("/users/{id}")
     public ResponseEntity show(@PathVariable Long id) throws Exception {
         User user = userService.getUser(id);
-        return ResponseEntity.ok(user);
+
+        ResponseData responseData = ResponseData.builder()
+                .message("select user detail")
+                .data(user)
+                .build();
+
+        return ResponseEntity.ok().body(responseData);
     }
 
     // TODO: 생성
     @PostMapping("/users")
     public ResponseEntity create(@RequestBody JoinUserForm joinUserForm) throws Exception {
-
         try {
             userService.join(joinUserForm);
         } catch (Exception e) {
-            return ResponseEntity.ok(e);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok("ok");
     }
@@ -52,7 +66,7 @@ public class UserController {
         try{
             return ResponseEntity.ok("ok");
         }catch (Exception e) {
-            return ResponseEntity.ok("server error");
+            return ResponseEntity.ok(e.getMessage());
         }
     }
 

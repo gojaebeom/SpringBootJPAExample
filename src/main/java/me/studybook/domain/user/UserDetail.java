@@ -1,8 +1,8 @@
 package me.studybook.domain.user;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_details")
 @Getter
-@Setter
 @ToString
+@NoArgsConstructor
 public class UserDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(targetEntity = User.class, cascade = { CascadeType.REMOVE })
+    @OneToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -38,4 +38,13 @@ public class UserDetail {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Builder
+    public UserDetail(Long id, User user, short ageGroupType, char babyGender, String babyBirthday) {
+        this.id = id;
+        this.user = user;
+        this.ageGroupType = ageGroupType;
+        this.babyGender = babyGender;
+        this.babyBirthday = babyBirthday;
+    }
 }

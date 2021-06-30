@@ -1,5 +1,7 @@
 package me.studybook.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,10 +14,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Getter
-@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class User {
 
     @Id
@@ -50,15 +51,14 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "user")
-    private UserDetail userDetail;
-
-    @OneToMany(mappedBy = "user")
-    private List<UserImage> userImages;
-
-    @OneToMany(mappedBy = "follower")
-    private List<UserFollow> followers;
-
-    @OneToMany(mappedBy = "following")
-    private List<UserFollow> followings;
+    @Builder
+    public User(String email, String password, String nickname, String refreshToken, short isLogin, LocalDateTime lastLoggedAt, LocalDateTime lastOutAt) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.refreshToken = refreshToken;
+        this.isLogin = isLogin;
+        this.lastLoggedAt = lastLoggedAt;
+        this.lastOutAt = lastOutAt;
+    }
 }
