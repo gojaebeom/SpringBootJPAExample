@@ -1,9 +1,9 @@
 package kr.co.hohocompany.uahage.domain.place;
 
+import kr.co.hohocompany.uahage.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import me.studybook.domain.user.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 

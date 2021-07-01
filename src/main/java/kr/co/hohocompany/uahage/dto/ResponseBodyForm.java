@@ -4,12 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ResponseData {
+public class ResponseBodyForm {
     private String message;
     private Object data;
 
     @Builder
-    public ResponseData(String message, Object data) {
+    public ResponseBodyForm(String message, Object data) {
         this.message = message;
         this.data = data;
     }

@@ -1,0 +1,24 @@
+# POSTGRES DB INFO
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://uahage2.c7qbk7qns6ot.ap-northeast-2.rds.amazonaws.com:5432/blog
+    username: postgres
+    password: hohocom!
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+# AWS S3 INFO
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAS4ROJ4JBS23EBKA7
+      secretKey: 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
+    s3:
+      bucket: uahage
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
