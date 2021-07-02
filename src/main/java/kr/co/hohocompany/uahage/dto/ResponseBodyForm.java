@@ -1,9 +1,10 @@
 package kr.co.hohocompany.uahage.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class ResponseBodyForm {
     private String message;
     private Object data;

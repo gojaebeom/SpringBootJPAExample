@@ -7,15 +7,14 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import kr.co.hohocompany.uahage.dto.ResponseBodyForm;
+import kr.co.hohocompany.uahage.controller.ExceptionController;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
+import java.net.BindException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +46,17 @@ public class S3Service {
                 .build();
     }
 
-    public List<String> upload(MultipartFile[] files) throws IOException {
-        List<String> fileNames = new ArrayList<>();
-        for(MultipartFile file : files) {
-            String fileName = file.getOriginalFilename();
+    public List<String> upload(MultipartFile[] files) throws Exception {
+        // TODO: 이미지 파일 없을 시 바로 리턴
+        if(files == null) return null;
 
+        List<String> fileNames = new ArrayList<>();
+
+        for(MultipartFile file : files) {
+            // TODO: 이미지 검사
+            validationImageFile(file);
+
+            String fileName = file.getOriginalFilename();
             s3Client.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
@@ -61,21 +66,23 @@ public class S3Service {
         return fileNames;
     }
 
-    public boolean validationImageFiles(MultipartFile[] files) throws IOException {
+    public void validationImageFile(MultipartFile file) throws Exception {
 
-        for(MultipartFile file: files) {
-            String fileName = file.getOriginalFilename();
-            long fileSize = file.getSize();
-            System.out.println("파일 이름 : "+ fileName);
-            System.out.println("파일 사이즈 : "+ fileSize);
+        String fileName = file.getOriginalFilename().replaceAll("\\s+","");;
+        long fileSize = file.getSize();
 
-            // TODO: 이미지 사이즈 초과시 실패 응답
-            if( 100000000 < fileSize ){
-
-                return false;
-            }
+        String regExp = "^([\\S]+(\\.(?i)(jpg|png|gif|bmp))$)";
+        System.out.println("파일 이름 : "+ fileName);
+        // TODO: 이미지 파일 타입 검사
+        if(!fileName.matches(regExp)){
+            throw new BindException("Is Not Image File: jpg, png, gif, bmp 확장자 파일만 사용할 수 있습니다.");
         }
 
-        return true;
+        System.out.println("파일 사이즈 : "+ fileSize);
+        final int limitSize = 2000000;
+        // TODO: 이미지 사이즈 초과시 실패 응답
+        if( fileSize > limitSize  ){
+            throw new BindException("File Size Overflow: 파일 하나의 사이즈는 최대 2MB로 제한됩니다.");
+        }
     }
 }

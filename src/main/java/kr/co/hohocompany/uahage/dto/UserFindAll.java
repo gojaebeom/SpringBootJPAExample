@@ -16,6 +16,7 @@ public class UserFindAll {
     private String babyBirthday;
     private char babyGender;
     private short ageGroupType;
+
     //private List<UserImage> userImages = new ArrayList<>();
 
 

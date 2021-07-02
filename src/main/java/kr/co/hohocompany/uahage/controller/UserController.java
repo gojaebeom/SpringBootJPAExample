@@ -13,33 +13,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final S3Service s3Service;
-//
-//    @Autowired
-//    public UserController(UserService userService, S3Service s3Service) {
-//        this.userService = userService;
-//        this.s3Service = s3Service;
-//    }
+
+    @Autowired
+    public UserController(UserService userService, S3Service s3Service) {
+        this.userService = userService;
+        this.s3Service = s3Service;
+    }
 
     // TODO: 전체,필터에 따른 조회
     @GetMapping("/users")
     public ResponseEntity index() throws Exception {
         List<UserFindAll> users = userService.getUsers();
 
-        ResponseBodyForm responseData = ResponseBodyForm.builder()
-                .message("select user list")
+        ResponseBodyForm responseBodyForm = ResponseBodyForm.builder()
+                .message("Success get user list")
                 .data(users)
                 .build();
 
-        return ResponseEntity.ok().body(responseData);
+        return ResponseEntity.ok().body(responseBodyForm);
     }
 
     // TODO: 상세 조회
@@ -47,47 +47,30 @@ public class UserController {
     public ResponseEntity show(@PathVariable Long id) throws Exception {
         User user = userService.getUser(id);
 
-        ResponseBodyForm responseData = ResponseBodyForm.builder()
+        ResponseBodyForm responseBodyForm = ResponseBodyForm.builder()
                 .message("select user detail")
                 .data(user)
                 .build();
 
-        return ResponseEntity.ok().body(responseData);
+        return ResponseEntity.ok().body(responseBodyForm);
     }
 
     // TODO: 생성
     @PostMapping("/users")
     public ResponseEntity create(@RequestBody JoinUserForm joinUserForm) throws Exception {
-        try {
-            userService.join(joinUserForm);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+
+        userService.join(joinUserForm);
+
         return ResponseEntity.ok("ok");
     }
 
     // TODO: 수정
     @PutMapping("/users/{id}")
-    public ResponseEntity update(@PathVariable Long id, UserUpdateForm userUpdateForm) throws IOException {
+    public ResponseEntity update(@PathVariable Long id, UserUpdateForm userUpdateForm) throws Exception {
 
-        System.out.println(userUpdateForm.getImages());
-        if(s3Service.validationImageFiles(userUpdateForm.getImages())){
-            ResponseBodyForm responseData = ResponseBodyForm.builder()
-                    .message("File Size Overflow")
-                    .data(false)
-                    .build();
-            return ResponseEntity.internalServerError().body(responseData);
-        }
+            List<String> imgPathStrings = s3Service.upload(userUpdateForm.getImages());
 
-        List<String> imgPathStrings = s3Service.upload(userUpdateForm.getImages());
-
-        System.out.println(imgPathStrings);
-
-        try{
             return ResponseEntity.ok("ok");
-        }catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
     }
 
     // TODO: 삭제
