@@ -32,7 +32,7 @@ public class UserController {
     // TODO: 전체,필터에 따른 조회
     @GetMapping("/users")
     public ResponseEntity index() throws Exception {
-        List<UserFindAll> users = userService.getUsers();
+        List<UserFindAll> users = userService.index();
 
         ResponseBodyForm responseBodyForm = ResponseBodyForm.builder()
                 .message("Success get user list")
@@ -45,7 +45,7 @@ public class UserController {
     // TODO: 상세 조회
     @GetMapping("/users/{id}")
     public ResponseEntity show(@PathVariable Long id) throws Exception {
-        User user = userService.getUser(id);
+        User user = userService.show(id);
 
         ResponseBodyForm responseBodyForm = ResponseBodyForm.builder()
                 .message("select user detail")
@@ -69,6 +69,11 @@ public class UserController {
     public ResponseEntity update(@PathVariable Long id, UserUpdateForm userUpdateForm) throws Exception {
 
             List<String> imgPathStrings = s3Service.upload(userUpdateForm.getImages());
+
+            User user = User.builder()
+                    .build();
+
+            userService.update();
 
             return ResponseEntity.ok("ok");
     }

@@ -21,11 +21,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<UserFindAll> getUsers() throws Exception {
+    public List<UserFindAll> index() throws Exception {
         return userRepository.findAll();
     }
 
-    public User getUser(Long id) throws Exception {
+    public User show(Long id) throws Exception {
         return userRepository.findOne(id);
     }
 
@@ -47,7 +47,7 @@ public class UserService {
         userRepository.create(user);
     }
 
-    public void updateUser() throws Exception {
+    public void update() throws Exception {
 
     }
 }
